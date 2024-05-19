@@ -1,4 +1,4 @@
-
+import tensorflow as tf
 
 
 def clip_0_1(image):
