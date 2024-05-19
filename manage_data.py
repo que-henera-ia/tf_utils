@@ -1,9 +1,11 @@
 import tensorflow as tf
 import numpy as np
-import matplotlib.plot as plt
+import matplotlib.pyplot as plt
+import PIL.Image
+import imageio
+import glob
 
-
-def load_img(path_to_img, img_shape):
+def load_img(path_to_img, img_shape=512):
   max_dim = img_shape
   img = tf.io.read_file(path_to_img)
   img = tf.image.decode_image(img, channels=3)
@@ -32,3 +34,27 @@ def save_img(image,img_name):
   plt.imshow(image)
   plt.axis('off')
   plt.savefig(img_name + '.png')
+
+
+def save_gif(filename, re_images_name='img*.png'):
+  anim_file = filename + '.gif'
+  with imageio.get_writer(anim_file, mode='I') as writer:
+    filenames = glob.glob(re_images_name)
+    filenames = sorted(filenames)
+    for filename in filenames:
+      image = imageio.imread(filename)
+      writer.append_data(image)
+    image = imageio.imread(filename)
+    writer.append_data(image)
+    
+
+def save_mp4(filename, re_images_name='img*.png'):
+  anim_file = filename + '.mp4'
+  with imageio.get_writer(anim_file, mode='I') as writer:
+    filenames = glob.glob(re_images_name)
+    filenames = sorted(filenames)
+    for filename in filenames:
+      image = imageio.imread(filename)
+      writer.append_data(image)
+    image = imageio.imread(filename)
+    writer.append_data(image)
