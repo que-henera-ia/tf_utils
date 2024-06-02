@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow_docs.vis.embed as embed
 import numpy as np
 import matplotlib.pyplot as plt
 import PIL.Image
@@ -6,7 +7,7 @@ import imageio
 import glob
 import os
 
-def load_img(path_to_img, img_shape=512, img_channels=3, preserve_aspect_ratio=False):
+def load_image(path_to_img, img_shape=512, img_channels=3, preserve_aspect_ratio=False):
   img = tf.io.read_file(path_to_img)
   img = tf.image.decode_image(img, channels=img_channels)
   img = tf.image.convert_image_dtype(img, tf.float32)
@@ -24,7 +25,7 @@ def load_img(path_to_img, img_shape=512, img_channels=3, preserve_aspect_ratio=F
   img = img[tf.newaxis, :]
   return img
 
-def load_img_dataset(path_to_dataset, img_shape=512, img_channels=3, preserve_aspect_ratio=False):
+def load_image_dataset(path_to_dataset, img_shape=512, img_channels=3, preserve_aspect_ratio=False):
   # Check if the path exists
   if not os.path.exists(path_to_dataset):
     print("The specified path does not exist.")
@@ -38,7 +39,7 @@ def load_img_dataset(path_to_dataset, img_shape=512, img_channels=3, preserve_as
   
   dataset = []
   for file in files:
-    img = load_img(os.path.join(path_to_dataset, file), img_shape=img_shape, img_channels=img_channels,preserve_aspect_ratio=preserve_aspect_ratio)
+    img = load_image(os.path.join(path_to_dataset, file), img_shape=img_shape, img_channels=img_channels,preserve_aspect_ratio=preserve_aspect_ratio)
     dataset.append(img[0])
   return tf.convert_to_tensor(dataset)
 
@@ -81,13 +82,13 @@ def tensor_to_image(tensor):
     tensor = tensor[0]
   return PIL.Image.fromarray(tensor)
 
-def save_img(image,img_name):
+def save_image(image,img_path="data_out/image"):
   fig = plt.figure()
   plt.imshow(image)
   plt.axis('off')
-  plt.savefig(img_name + '.png')
+  plt.savefig(img_path + '.png')
 
-def save_multiple_images(images, img_name):
+def save_image_matrix(images, img_path="data_out/image"):
   fig = plt.figure(figsize=(4, 4))
 
   for i in range(images.shape[0]):
@@ -96,11 +97,10 @@ def save_multiple_images(images, img_name):
     plt.axis('off')
 
   # tight_layout minimizes the overlap between 2 sub-plots
-  plt.savefig(img_name + '.png')
-  # plt.show()
+  plt.savefig(img_path + '.png')
 
 
-def save_gif(filename, re_images_name='img*.png'):
+def save_gif(filename, re_images_name='data_out/image*.png'):
   anim_file = filename + '.gif'
   with imageio.get_writer(anim_file, mode='I') as writer:
     filenames = glob.glob(re_images_name)
@@ -111,8 +111,9 @@ def save_gif(filename, re_images_name='img*.png'):
     image = imageio.imread(filename)
     writer.append_data(image)
     
+  embed.embed_file(anim_file)
 
-def save_mp4(filename, re_images_name='img*.png'):
+def save_mp4(filename, re_images_name='data_out/image*.png'):
   anim_file = filename + '.mp4'
   with imageio.get_writer(anim_file, mode='I') as writer:
     filenames = glob.glob(re_images_name)
@@ -123,6 +124,7 @@ def save_mp4(filename, re_images_name='img*.png'):
     image = imageio.imread(filename)
     writer.append_data(image)
 
+  embed.embed_file(anim_file)
 
 def split_dataset(data, test_proportion=0.3):
   test_size = int(np.shape(data)[0]*0.1)
