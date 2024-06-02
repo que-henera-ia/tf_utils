@@ -134,3 +134,30 @@ def split_dataset(data, test_proportion=0.3):
 
 def shuffle_dataset(data):
   return tf.random.shuffle(data)
+
+
+  '''
+
+def plot_latent_images(model, n, digit_size=28):
+  """Plots n x n digit images decoded from the latent space."""
+
+  norm = tfp.distributions.Normal(0, 1)
+  grid_x = norm.quantile(np.linspace(0.05, 0.95, n))
+  grid_y = norm.quantile(np.linspace(0.05, 0.95, n))
+  image_width = digit_size*n
+  image_height = image_width
+  image = np.zeros((image_height, image_width))
+
+  for i, yi in enumerate(grid_x):
+    for j, xi in enumerate(grid_y):
+      z = np.array([[xi, yi]])
+      x_decoded = model.sample(z)
+      digit = tf.reshape(x_decoded[0], (digit_size, digit_size))
+      image[i * digit_size: (i + 1) * digit_size,
+            j * digit_size: (j + 1) * digit_size] = digit.numpy()
+
+  plt.figure(figsize=(10, 10))
+  plt.imshow(image, cmap='Greys_r')
+  plt.axis('Off')
+  # plt.show()
+'''
