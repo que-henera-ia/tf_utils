@@ -10,7 +10,7 @@ import os
 def load_image(path_to_img, img_shape=512, img_channels=3, preserve_aspect_ratio=False):
   img = tf.io.read_file(path_to_img)
   img = tf.image.decode_image(img, channels=img_channels)
-  img = tf.image.convert_image_dtype(img, tf.float32)
+  # img = tf.image.convert_image_dtype(img, tf.float32) # clip the image values from 0 to 1 instead of 0-255
 
   if preserve_aspect_ratio:
     shape = tf.cast(tf.shape(img)[:-1], tf.float32)
@@ -83,6 +83,10 @@ def tensor_to_image(tensor):
   return PIL.Image.fromarray(tensor)
 
 def save_image(image,img_path="data_out/image"):
+  '''
+  save_image only works if the image values are float between 0 and 1 or uint8 between 0 and 255.
+  Since we are using 0-1 range for IAs, remember to use float or to convert to uint8 if using 0-255 range.
+  '''
   fig = plt.figure()
   plt.imshow(image)
   plt.axis('off')
