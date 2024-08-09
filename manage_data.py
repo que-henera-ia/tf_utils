@@ -10,7 +10,7 @@ import os
 def load_image(path_to_img, img_shape=512, img_channels=3, preserve_aspect_ratio=False):
   img = tf.io.read_file(path_to_img)
   img = tf.image.decode_image(img, channels=img_channels)
-  # img = tf.image.convert_image_dtype(img, tf.float32) # clip the image values from 0 to 1 instead of 0-255
+  img = tf.image.convert_image_dtype(img, tf.float32) # clip the image values from 0 to 1 instead of 0-255
 
   if preserve_aspect_ratio:
     shape = tf.cast(tf.shape(img)[:-1], tf.float32)
@@ -94,9 +94,12 @@ def save_image(image,img_path="data_out/image"):
 
 def save_image_matrix(images, img_path="data_out/image"):
   fig = plt.figure(figsize=(4, 4))
+  ncol = int(np.sqrt(images.shape[0]))
+  nrow = int(np.sqrt(images.shape[0]))
+  if images.shape[0] == 2: ncol = 2
 
   for i in range(images.shape[0]):
-    plt.subplot(int(np.sqrt(images.shape[0])), int(np.sqrt(images.shape[0])), i + 1)
+    plt.subplot(nrow, ncol, i + 1)
     plt.imshow(images[i, :, :, :])
     plt.axis('off')
 
